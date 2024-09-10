@@ -1,5 +1,5 @@
 .vscode/*
 venv/
-src/services/__pycache__/**
+src/services/__pycache__/*
 yolov8n.pt
 yolov8n-seg.pt

@@ -9,12 +9,17 @@ import matplotlib.image as imgplt
 import os
 import cv2
 import random
+import imutils
 from glasses_detector import GlassesClassifier, GlassesDetector
+
+from services.Response import Response
 
 class FaceDetector:
     def __init__(self, image):
         self.result = ''
-        self.image = np.array(Image.open(image))
+        self.image = imutils.resize(cv2.imread(image), width=400)
+        self.image_array = np.array(self.image)
+        # self.image_gray = self.convert_to_grayscale(self.image_array)
         
     def detect(self):
         BaseOptions = mp.tasks.BaseOptions
@@ -30,22 +35,35 @@ class FaceDetector:
             running_mode=VisionRunningMode.IMAGE)
 
         with FaceDetector.create_from_options(options) as detector:
-            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=self.image)
+            
+            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=self.image_array)
             detection_result = detector.detect(mp_image)
             
             qtd = len(detection_result.detections)
    
             _ = GlassesClassifier(kind='anyglasses')
-            predictGlasses = _.predict(self.image)
+            predictGlasses = _.predict(self.image_array, format='int')
                 
-            if(qtd == 1 and predictGlasses == 'absent'):
-                self.result = 'Foto Validada com Sucesso'
-            elif(qtd == 1 and predictGlasses == 'present'):
-                self.result = 'Foto com Óculos'
-            else:
-                self.result = 'Nenhuma pessoa foi reconhecida na foto'
-        
-        return self.result
+            if(qtd != 1):
+                return Response('Ajuste bem o seu rosto na camera', False)
 
-   
+            if(predictGlasses == 1):
+                return Response('Aproxime-se da câmera e remova possíveis objetos do rosto, e fique em um lugar bem iluminado.', False)
+
+            return Response('Foto Validada com Sucesso', True)
+
+    def convert_to_grayscale(self, image_array):
+        if len(image_array.shape) == 2:
+            return image_array
+        elif len(image_array.shape) == 3:
+            if image_array.shape[2] == 3:
+                # Imagem RGB
+                return np.array(self.image.convert('L'))
+            elif image_array.shape[2] == 4:
+                # Imagem RGBA
+                return np.array(self.image.convert('L'))
+            else:
+                raise ValueError("Formato de imagem desconhecido")
+     
+
             

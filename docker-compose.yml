@@ -10,5 +10,9 @@ services:
       - "7400:7400"
     environment:
       - FLASK_ENV=production
-      
-    network_mode: "host"
+    networks:
+      - controle-interno-network
+
+networks:
+  controle-interno-network:
+    external: true

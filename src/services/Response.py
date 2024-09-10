@@ -1,5 +1,7 @@
 class Response():
-    def __init__(self, status_code, body):
-        self.status_code = status_code
-        self.body = body
+    def __init__(self, message, isValid):
+        self.message = message
+        self.isValid = isValid
 
+    def to_dict(self):
+        return { 'message': self.message, 'isValid': self.isValid }
