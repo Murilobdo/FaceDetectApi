@@ -16,5 +16,6 @@ COPY . .
 
 EXPOSE 7000
 
+
 # Comando para rodar a aplicação Flask
 CMD ["python", "./src/Application.py"]
