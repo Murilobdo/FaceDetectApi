@@ -1,7 +1,5 @@
 FROM python:3.12.3
 
-USER root
-
 RUN apt-get update && \
     apt-get install -y \
     libgl1-mesa-dev \
