@@ -3,9 +3,10 @@ version: '3.8'
 services:
   face-api:
     container_name: face-api
-    build: 
-      context: .
-      network: host
+    image: face-api:v1.5
+    # build: 
+    #  context: .
+    #  network: host
     ports:
       - "7400:7400"
     environment:

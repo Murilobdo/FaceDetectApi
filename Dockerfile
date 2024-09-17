@@ -10,12 +10,10 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . .
 
-EXPOSE 7000
+ENV PYTHONPATH=/app/src
 
-
-# Comando para rodar a aplicação Flask
-CMD ["python", "./src/Application.py"]
+CMD ["gunicorn", "-c", "gunicorn_config.py", "src.application:app"]
