@@ -1,26 +1,26 @@
-import mediapipe as mp
-import numpy as np
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
-from PIL import Image
-from ultralytics import YOLO
-import matplotlib.pyplot as plt
-import matplotlib.image as imgplt
 import os
 import cv2
-import random
 import imutils
-from glasses_detector import GlassesClassifier, GlassesDetector
+from PIL import Image
+import mediapipe as mp
+import numpy as np
+from glasses_detector import GlassesClassifier
+import io
 
 from services.Response import Response
 
 class FaceDetector:
     def __init__(self, image):
         self.result = ''
-        self.image = imutils.resize(cv2.imread(image), width=400)
+        self.image = self.loadImage(image)
         self.image_array = np.array(self.image)
-        # self.image_gray = self.convert_to_grayscale(self.image_array)
-        
+
+    def loadImage(self, image):
+        image_bytes = image.read()
+        image = Image.open(io.BytesIO(image_bytes))
+        image = np.array(image)
+        return imutils.resize(image, width=500)
+    
     def detect(self):
         BaseOptions = mp.tasks.BaseOptions
         FaceDetector = mp.tasks.vision.FaceDetector
@@ -51,19 +51,3 @@ class FaceDetector:
                 return Response('Aproxime-se da câmera e remova possíveis objetos do rosto, e fique em um lugar bem iluminado.', False)
 
             return Response('Foto Validada com Sucesso', True)
-
-    def convert_to_grayscale(self, image_array):
-        if len(image_array.shape) == 2:
-            return image_array
-        elif len(image_array.shape) == 3:
-            if image_array.shape[2] == 3:
-                # Imagem RGB
-                return np.array(self.image.convert('L'))
-            elif image_array.shape[2] == 4:
-                # Imagem RGBA
-                return np.array(self.image.convert('L'))
-            else:
-                raise ValueError("Formato de imagem desconhecido")
-     
-
-            
