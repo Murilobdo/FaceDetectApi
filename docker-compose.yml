@@ -3,7 +3,7 @@ version: '3.8'
 services:
   face-api:
     container_name: face-api
-    image: face-api:v1.5
+    image: face-api:v1.0
     # build: 
     #  context: .
     #  network: host

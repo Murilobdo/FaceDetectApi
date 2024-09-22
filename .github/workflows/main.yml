@@ -1,0 +1,36 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      docker_container: "face-api"
+      docker_tag_version: "v1.0"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Dockerfile
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: "${{ env.docker_container }}:${{ env.docker_tag_version }}"
+      
+      - name: Save Docker Image
+        run: docker save ${{ env.docker_container }}:${{ env.docker_tag_version }} -o "${{ env.docker_container }}_${{ env.docker_tag_version }}.tar"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Publish
+          path: ${{ env.docker_container }}_${{ env.docker_tag_version }}.tar
