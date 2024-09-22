@@ -1,19 +1,14 @@
-name: Build and Deploy Image Docker
+name: Build and Deploy Image Docker Hub
 
 on:
   push:
-    branches: ["main"]
     tags: 
       - v1.*
-  pull_request:
-    branches: ["main"]
   
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      docker_container: "face-api"
-      docker_tag_version: "v1.0"
       DOCKER_REGISTRY: "docker.io"
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
