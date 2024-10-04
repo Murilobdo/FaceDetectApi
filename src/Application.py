@@ -2,9 +2,14 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from services.FaceDetector import FaceDetector
 from services.Response import Response
+import ssl
 
 app = Flask(__name__)
 CORS(app)
+
+ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+ctx.load_cert_chain('/etc/ssl/certs/app.crt', '/etc/ssl/certs/privat.key')
+
 
 def NotFound():
     return jsonify({ 'data': False, 'statusCode': 404 })
@@ -34,6 +39,6 @@ def validate():
         return BadRequest(str(e))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=7400)
+    app.run(host='0.0.0.0', port=443, ssl_context=ctx)
 
 

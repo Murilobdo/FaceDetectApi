@@ -3,12 +3,13 @@ version: '3.8'
 services:
   face-api:
     container_name: face-api
-    image: teste:v1
-    # build: 
-    #  context: .
-    #  network: host
+    image: controleinternofacedetectapi-face-api:latest
+    build: 
+     context: .
+     network: host
     ports:
       - "7400:7400"
+      - "443:443"
     environment:
       - FLASK_ENV=production
     networks:
