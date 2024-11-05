@@ -1,6 +1,4 @@
-import ssl
 from dotenv import load_dotenv  
-import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from services.FaceDetector import FaceDetector
@@ -10,12 +8,6 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
-print(os.getenv('ENV'))
-if(os.getenv('ENV') == 'production' and os.path.exists('/etc/ssl/certs/privat.key')):
-    ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-    ctx.load_cert_chain('/etc/ssl/certs/app.crt', '/etc/ssl/certs/privat.key')
-else:
-    raise Exception('CERTIFICADOS SSL NÃO ENCONTRADOS!')
 
 
 def NotFound():
@@ -46,9 +38,6 @@ def validate():
         return BadRequest(str(e))
 
 if __name__ == '__main__':
-    if(os.getenv('ENV') == 'production'):
-        app.run(host='0.0.0.0', port=443, ssl_context=ctx)
-    else:
-        app.run(host='0.0.0.0', port=7400)
+    app.run(host='0.0.0.0', port=7400)
 
 
